@@ -27,10 +27,10 @@ def load_file(input_file):
     
     return char_seqs, tag_seqs
 
-def preprocess(char_seqs, tag_seqs, vocab_file, tag_vocab=None):
+def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN, cased=True, tag_vocab=None, TAG_PAD=''):
     # Load vocab & Init Tokenizer
     vocab = load_vocabulary(vocab_file)
-    tokenizer = Tokenizer(vocab, cased=True)
+    tokenizer = Tokenizer(vocab, cased=cased)
 
     # Tokenization
     token_seqs = []
@@ -49,6 +49,7 @@ def preprocess(char_seqs, tag_seqs, vocab_file, tag_vocab=None):
         token_seqs.append(token_seq)
 
     # token => token_id
+    TAG_PAD_ID = 0
     token_id_seqs = []
     unk_id = vocab.get(TOKEN_UNK)
     for token_seq, orig2token_map in zip(token_seqs, orig2token_maps):
@@ -61,8 +62,6 @@ def preprocess(char_seqs, tag_seqs, vocab_file, tag_vocab=None):
 
     # tag => tag_id
     # Reserve 0 for padding
-    TAG_PAD_ID = 0
-    TAG_PAD = ''
     if tag_vocab != None:
         if tag_vocab[TAG_PAD] != TAG_PAD_ID:
             raise Exception("tag_vocab[" + TAG_PAD + "] must equals " + str(TAG_PAD_ID))
@@ -80,9 +79,10 @@ def preprocess(char_seqs, tag_seqs, vocab_file, tag_vocab=None):
         tag_id_seqs.append(tag_id_seq)
 
     # padding
-    SEQ_LEN = 10
     TOKEN_PAD_ID = 0
     def padding(seq, pad_char):
+        if len(seq) > SEQ_LEN:
+            raise Exception("SEQ_LEN too small, may need truncate. Here is a sequence with the length of " + str(len(seq)))
         while len(seq) < SEQ_LEN:
             seq.append(pad_char)
     for token_id_seq in token_id_seqs:
@@ -102,6 +102,7 @@ def preprocess(char_seqs, tag_seqs, vocab_file, tag_vocab=None):
 
 if __name__ == "__main__":
     char_seqs, tag_seqs = load_file("test.txt")
-    token_id_seqs, one_hot_tag_id_seqs, tag_vocab = preprocess(char_seqs, tag_seqs)
+    vocab_path = "/mnt/d/My Drive/Graduation/BERT/multi_cased_L-12_H-768_A-12/vocab.txt"
+    token_id_seqs, one_hot_tag_id_seqs, tag_vocab = preprocess(char_seqs, tag_seqs, vocab_path, 50)
     print(token_id_seqs, one_hot_tag_id_seqs, tag_vocab)
-    preprocess(char_seqs, tag_seqs, tag_vocab)
+    preprocess(char_seqs, tag_seqs, vocab_path, 50, tag_vocab=tag_vocab)
