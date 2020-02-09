@@ -96,6 +96,7 @@ def preprocess(char_seqs, tag_seqs):
 
     return token_id_seqs, one_hot_tag_id_seqs, tag_vocab
 
+
 if __name__ == "__main__":
     char_seqs, tag_seqs = load_file("test.txt")
     print(preprocess(char_seqs, tag_seqs))
