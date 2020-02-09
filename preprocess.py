@@ -2,8 +2,6 @@ import os
 from keras_bert import load_vocabulary, Tokenizer, TOKEN_CLS, TOKEN_SEP, TOKEN_UNK, TOKEN_PAD
 from keras.utils.np_utils import to_categorical
 
-addh = "/mnt/d/My Drive"
-
 def load_file(input_file):
     if not os.path.exists(input_file):
         raise Exception(input_file + " doesn't exist.")
@@ -29,9 +27,9 @@ def load_file(input_file):
     
     return char_seqs, tag_seqs
 
-def preprocess(char_seqs, tag_seqs, tag_vocab=None):
+def preprocess(char_seqs, tag_seqs, vocab_file, tag_vocab=None):
     # Load vocab & Init Tokenizer
-    vocab = load_vocabulary(addh + "/Graduation/BERT/multi_cased_L-12_H-768_A-12/vocab.txt")
+    vocab = load_vocabulary(vocab_file)
     tokenizer = Tokenizer(vocab, cased=True)
 
     # Tokenization
