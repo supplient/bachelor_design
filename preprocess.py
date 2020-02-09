@@ -29,7 +29,7 @@ def load_file(input_file):
     
     return char_seqs, tag_seqs
 
-def preprocess(char_seqs, tag_seqs):
+def preprocess(char_seqs, tag_seqs, tag_vocab=None):
     # Load vocab & Init Tokenizer
     vocab = load_vocabulary(addh + "/Graduation/BERT/multi_cased_L-12_H-768_A-12/vocab.txt")
     tokenizer = Tokenizer(vocab, cased=True)
@@ -65,7 +65,12 @@ def preprocess(char_seqs, tag_seqs):
     # Reserve 0 for padding
     TAG_PAD_ID = 0
     TAG_PAD = ''
-    tag_vocab = {TAG_PAD:TAG_PAD_ID}
+    if tag_vocab != None:
+        if tag_vocab[TAG_PAD] != TAG_PAD_ID:
+            raise Exception("tag_vocab[" + TAG_PAD + "] must equals " + str(TAG_PAD_ID))
+    else:
+        tag_vocab = {TAG_PAD:TAG_PAD_ID}
+
     tag_id_seqs = []
     for tag_seq in tag_seqs:
         tag_id_seq = [TAG_PAD_ID] # for [CLS]
@@ -99,4 +104,6 @@ def preprocess(char_seqs, tag_seqs):
 
 if __name__ == "__main__":
     char_seqs, tag_seqs = load_file("test.txt")
-    print(preprocess(char_seqs, tag_seqs))
+    token_id_seqs, one_hot_tag_id_seqs, tag_vocab = preprocess(char_seqs, tag_seqs)
+    print(token_id_seqs, one_hot_tag_id_seqs, tag_vocab)
+    preprocess(char_seqs, tag_seqs, tag_vocab)
