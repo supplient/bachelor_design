@@ -97,12 +97,24 @@ def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN, cased=True, tag_vocab=N
             to_categorical(tag_id_seq, num_classes=len(tag_vocab))
             )
 
-    return token_id_seqs, one_hot_tag_id_seqs, tag_vocab
+    # create segment_seqs
+    segment_seqs = []
+    for token_id_seq in token_id_seqs:
+        segment_seq = [0] * len(token_id_seq)
+        segment_seqs.append(segment_seq)
+
+
+    return token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab
 
 
 if __name__ == "__main__":
     char_seqs, tag_seqs = load_file("test.txt")
     vocab_path = "/mnt/d/My Drive/Graduation/BERT/multi_cased_L-12_H-768_A-12/vocab.txt"
-    token_id_seqs, one_hot_tag_id_seqs, tag_vocab = preprocess(char_seqs, tag_seqs, vocab_path, 50)
-    print(token_id_seqs, one_hot_tag_id_seqs, tag_vocab)
+    token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab = preprocess(
+        char_seqs, 
+        tag_seqs, 
+        vocab_path, 
+        10
+        )
+    print(token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab)
     preprocess(char_seqs, tag_seqs, vocab_path, 50, tag_vocab=tag_vocab)
