@@ -27,7 +27,7 @@ def load_file(input_file):
     
     return char_seqs, tag_seqs
 
-def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN, cased=True, tag_vocab=None, TAG_PAD=''):
+def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_vocab=None, TAG_PAD=''):
     # Load vocab & Init Tokenizer
     vocab = load_vocabulary(vocab_file)
     tokenizer = Tokenizer(vocab, cased=cased)
@@ -82,7 +82,7 @@ def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN, cased=True, tag_vocab=N
     TOKEN_PAD_ID = 0
     def padding(seq, pad_char):
         if len(seq) > SEQ_LEN:
-            raise Exception("SEQ_LEN too small, may need truncate. Here is a sequence with the length of " + str(len(seq)))
+            del seq[SEQ_LEN:]
         while len(seq) < SEQ_LEN:
             seq.append(pad_char)
     for token_id_seq in token_id_seqs:
@@ -108,13 +108,14 @@ def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN, cased=True, tag_vocab=N
 
 
 if __name__ == "__main__":
-    char_seqs, tag_seqs = load_file("test.txt")
+    # file_path = "/mnt/d/My Drive/Graduation/Data/train_dict.txt"
+    file_path = "test.txt"
     vocab_path = "/mnt/d/My Drive/Graduation/BERT/multi_cased_L-12_H-768_A-12/vocab.txt"
+    char_seqs, tag_seqs = load_file(file_path)
     token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab = preprocess(
         char_seqs, 
         tag_seqs, 
-        vocab_path, 
-        10
+        vocab_path
         )
     print(token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab)
-    preprocess(char_seqs, tag_seqs, vocab_path, 50, tag_vocab=tag_vocab)
+    preprocess(char_seqs, tag_seqs, vocab_path, tag_vocab=tag_vocab)
