@@ -2,7 +2,7 @@ import numpy as np
 
 def analyze(char_seqs, tag_seqs, output_tag_id_seqs, 
         tag_vocab,
-        info_level # 0, 1, 2, the larger, the detailer
+        verbose=0 # 0, 1, 2, the larger, the detailer
         ):
     # Reverse tag_vocab, we need id => tag here
     reversed_tag_vocab = {}
@@ -13,7 +13,7 @@ def analyze(char_seqs, tag_seqs, output_tag_id_seqs,
     char_count = 0
     wrong_count = 0
     for char_seq, tag_seq, output_tag_id_seq in zip(char_seqs, tag_seqs, output_tag_id_seqs):
-        if info_level >= 1:
+        if verbose >= 1:
             print("-"*15)
             print("Sentence " + str(sent_count))
         output_seq = output_tag_id_seq[1:-1] # Remove [CLS] and [SEP]'s id
@@ -21,12 +21,12 @@ def analyze(char_seqs, tag_seqs, output_tag_id_seqs,
             output_tag_id = np.argmax(output_tag_id_one_hot)
             output_tag = reversed_tag_vocab[output_tag_id]
 
-            if info_level >= 2:
+            if verbose >= 2:
                 print(c + "\t" + expect_tag + "\t" + output_tag)
 
             char_count += 1
             if expect_tag != output_tag:
-                if info_level == 1:
+                if verbose == 1:
                     print(c + "\t" + expect_tag + "\t" + output_tag)
                 wrong_count += 1
         sent_count += 1
