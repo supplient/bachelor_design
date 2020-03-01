@@ -1,8 +1,3 @@
-# address head
-COLAB_AMOUNT_PATH = "/gdrive"
-COLAB_ADDH = COLAB_AMOUNT_PATH+ "/My Drive"
-LOCAL_ADDH = "/mnt/d/My Drive"
-
 # input file path
 TRAIN_DATA_PATH = "/Graduation/Data/train_dict.txt"
 TEST_DATA_PATH = "/Graduation/Data/test_dict.txt"

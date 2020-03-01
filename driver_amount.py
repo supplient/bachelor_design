@@ -1,15 +1,13 @@
-import config
-
 _locale = False
 try:
     import google.colab
-    google.colab.drive.mount(config.COLAB_AMOUNT_PATH)
+    google.colab.drive.mount("/gdrive")
 except ModuleNotFoundError:
     _locale = True
 
-addh = config.COLAB_ADDH
+addh = "/gdrive/My Drive"
 if _locale:
-    addh = config.LOCAL_ADDH
+    addh = "/mnt/d/My Drive"
     print("[Locale] Using address head: " + addh)
 else:
     print("[Colab] Using address head: " + addh)
