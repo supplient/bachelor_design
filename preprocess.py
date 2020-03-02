@@ -27,6 +27,24 @@ def load_file(input_file):
     
     return char_seqs, tag_seqs
 
+
+def shuffle_twin(a, b):
+    if len(a) != len(b):
+        raise Exception("Can only shuffle twin arrays with the same length.")
+
+    index_list = [i for i in range(len(a))]
+    import random
+    random.shuffle(index_list)
+
+    na = []
+    nb = []
+    for i in index_list:
+        na.append(a[i])
+        nb.append(b[i])
+
+    return na, nb
+
+
 def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_vocab=None, TAG_PAD=''):
     # Load vocab & Init Tokenizer
     vocab = load_vocabulary(vocab_file)
@@ -112,10 +130,12 @@ if __name__ == "__main__":
     file_path = "test.txt"
     vocab_path = "/mnt/d/My Drive/Graduation/BERT/multi_cased_L-12_H-768_A-12/vocab.txt"
     char_seqs, tag_seqs = load_file(file_path)
+    char_seqs, tag_seqs = shuffle_twin(char_seqs, tag_seqs)
     token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab = preprocess(
         char_seqs, 
         tag_seqs, 
-        vocab_path
+        vocab_path,
+        SEQ_LEN=15
         )
     print(token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab)
     preprocess(char_seqs, tag_seqs, vocab_path, tag_vocab=tag_vocab)

@@ -1,6 +1,7 @@
 # input file path
 TRAIN_DATA_PATH = "/Graduation/Data/train_dict.txt"
 TEST_DATA_PATH = "/Graduation/Data/test_dict.txt"
+DATA_PATH = "/Graduation/Data/data.txt"
 
 BERT_PATH = "/Graduation/BERT/multi_cased_L-12_H-768_A-12"
 BERT_VOCAB_PATH = BERT_PATH + "/vocab.txt"
