@@ -30,7 +30,7 @@ class _getLogger(object):
         _getLogger.logger.addHandler(sh)
 
 class EpochCheckpoint(keras.callbacks.Callback):
-    def EpochCheckpoint(self, modelpath, logpath, period):
+    def __init__(self, modelpath, logpath, period):
         if period < 0 or type(period) != int:
             raise Exception("period must be a positive integer")
 
