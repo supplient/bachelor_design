@@ -16,3 +16,6 @@ TRAIN_LOG_PATH = "/Graduation/Model/train.log"
     # Configs which are specialized 
     # when training or testing will not be listed here
 SEQ_LEN = 512
+
+# util
+LOG_PATH = "/Graduation/Model/system.log"
