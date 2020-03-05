@@ -12,6 +12,7 @@ BERT_CHECKPOINT_PATH = BERT_PATH + "/bert_model.ckpt"
 TAG_VOCAB_PATH = "/Graduation/Model/tag_vocab.pkl"
 MODEL_PATH = "/Graduation/Model/model.h5"
 TRAIN_LOG_PATH = "/Graduation/Model/train.log"
+EQUAL_DATA_PATH = "/Graduation/Data/equal.json"
 
 # train & test common config
     # Configs which are specialized 

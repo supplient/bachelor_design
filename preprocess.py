@@ -1,5 +1,14 @@
 import os
 
+def seq2str(seq):
+    s = ""
+    for c in seq:
+        s += c
+    return s
+
+def str2seq(s):
+    return [c for c in s]
+
 def load_file(input_file):
     if not os.path.exists(input_file):
         raise Exception(input_file + " doesn't exist.")
