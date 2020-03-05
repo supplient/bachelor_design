@@ -1,6 +1,4 @@
 import os
-from keras_bert import load_vocabulary, Tokenizer, TOKEN_CLS, TOKEN_SEP, TOKEN_UNK, TOKEN_PAD
-from keras.utils.np_utils import to_categorical
 
 def load_file(input_file):
     if not os.path.exists(input_file):
@@ -46,6 +44,9 @@ def shuffle_twin(a, b):
 
 
 def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_vocab=None, TAG_PAD=''):
+    from keras_bert import load_vocabulary, Tokenizer, TOKEN_CLS, TOKEN_SEP, TOKEN_UNK, TOKEN_PAD
+    from keras.utils.np_utils import to_categorical
+
     # Load vocab & Init Tokenizer
     vocab = load_vocabulary(vocab_file)
     tokenizer = Tokenizer(vocab, cased=cased)
