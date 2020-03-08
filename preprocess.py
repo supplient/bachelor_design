@@ -8,6 +8,12 @@ def seq2str(seq):
 
 def str2seq(s):
     return [c for c in s]
+    
+def padding(seq, pad_char, SEQ_LEN):
+    if len(seq) > SEQ_LEN:
+        del seq[SEQ_LEN:]
+    while len(seq) < SEQ_LEN:
+        seq.append(pad_char)
 
 def load_file(input_file):
     if not os.path.exists(input_file):
@@ -52,15 +58,10 @@ def shuffle_twin(a, b):
     return na, nb
 
 
-def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_vocab=None, TAG_PAD=''):
-    from keras_bert import load_vocabulary, Tokenizer, TOKEN_CLS, TOKEN_SEP, TOKEN_UNK, TOKEN_PAD
-    from keras.utils.np_utils import to_categorical
-
-    # Load vocab & Init Tokenizer
-    vocab = load_vocabulary(vocab_file)
+def tokenize(char_seqs, vocab, cased):
+    from keras_bert import Tokenizer, TOKEN_CLS, TOKEN_SEP
     tokenizer = Tokenizer(vocab, cased=cased)
 
-    # Tokenization
     token_seqs = []
     orig2token_maps = []
     for char_seq in char_seqs:
@@ -76,8 +77,16 @@ def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_voc
         orig2token_maps.append(orig2token_map)
         token_seqs.append(token_seq)
 
+    return token_seqs, orig2token_maps
+
+
+
+def preprocess_char(char_seqs, vocab, SEQ_LEN, cased):
+    from keras_bert import TOKEN_UNK
+    # Tokenization
+    token_seqs, orig2token_maps = tokenize(char_seqs, vocab, cased)
+
     # token => token_id
-    TAG_PAD_ID = 0
     token_id_seqs = []
     unk_id = vocab.get(TOKEN_UNK)
     for token_seq, orig2token_map in zip(token_seqs, orig2token_maps):
@@ -88,6 +97,22 @@ def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_voc
             token_id_seq.append(token_id)
         token_id_seqs.append(token_id_seq)
 
+    # padding
+    TOKEN_PAD_ID = 0
+    for token_id_seq in token_id_seqs:
+        padding(token_id_seq, TOKEN_PAD_ID, SEQ_LEN)
+
+    return token_id_seqs
+
+
+def create_segment(seqs_len, seq_len):
+    return [ [0]*seq_len ] * seqs_len
+
+
+def preprocess_tag(tag_seqs, SEQ_LEN, tag_vocab=None, TAG_PAD=''):
+    from keras.utils.np_utils import to_categorical
+    
+    TAG_PAD_ID = 0
     # tag => tag_id
     # Reserve 0 for padding
     if tag_vocab != None:
@@ -107,16 +132,8 @@ def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_voc
         tag_id_seqs.append(tag_id_seq)
 
     # padding
-    TOKEN_PAD_ID = 0
-    def padding(seq, pad_char):
-        if len(seq) > SEQ_LEN:
-            del seq[SEQ_LEN:]
-        while len(seq) < SEQ_LEN:
-            seq.append(pad_char)
-    for token_id_seq in token_id_seqs:
-        padding(token_id_seq, TOKEN_PAD_ID)
     for tag_id_seq in tag_id_seqs:
-        padding(tag_id_seq, TAG_PAD_ID)
+        padding(tag_id_seq, TAG_PAD_ID, SEQ_LEN)
 
     # make tag_id one-hot
     one_hot_tag_id_seqs = []
@@ -125,12 +142,37 @@ def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_voc
             to_categorical(tag_id_seq, num_classes=len(tag_vocab))
             )
 
-    # create segment_seqs
-    segment_seqs = []
-    for token_id_seq in token_id_seqs:
-        segment_seq = [0] * len(token_id_seq)
-        segment_seqs.append(segment_seq)
+    return one_hot_tag_id_seqs, tag_vocab
 
+
+
+def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_vocab=None, TAG_PAD=''):
+    from keras_bert import load_vocabulary
+
+    # Load vocab
+    vocab = load_vocabulary(vocab_file)
+
+    # preprocess char_seqs
+    token_id_seqs = preprocess_char(
+        char_seqs,
+        vocab, 
+        SEQ_LEN, 
+        cased
+    )
+
+    # create segment_seqs
+    segment_seqs = create_segment(
+        len(token_id_seqs),
+        len(token_id_seqs[0])
+    )
+
+    # preprocess tag_seqs
+    one_hot_tag_id_seqs, tag_vocab = preprocess_tag(
+        tag_seqs, 
+        SEQ_LEN, 
+        tag_vocab, 
+        TAG_PAD
+    )
 
     return token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab
 
