@@ -1,17 +1,6 @@
 import config
 
-def cal_dis(a, b):
-    # TODO This is wrong, because each sentence is not a vector, but a 512X768 matrix
-    # Here I need more survey
-    if len(a) != len(b):
-        raise Exception("Can only cal vecs with the same length.")
-    res = 0
-    for ai, bi in zip(a, b):
-        res += abs(ai-bi)**2
-    # Ignore sqrt since we only compare
-    return res 
-
-class Embedder:
+class CharEmbedder:
     def __init__(self):
         import keras
         import keras_bert
@@ -30,6 +19,7 @@ class Embedder:
     def embed(self, char_seqs):
         import preprocess
 
+        # Preprocess for model predicting
         token_id_seqs = preprocess.preprocess_char(
             char_seqs,
             self.vocab,
@@ -42,11 +32,20 @@ class Embedder:
             len(token_id_seqs[0])
         )
 
-        res = self.model.predict(
+        # Model predicting
+        predict_res = self.model.predict(
             [token_id_seqs, segment_seqs],
             batch_size=4
         )
-        return res
+
+        # Remove [CLS]
+        #       There is no need to remove [SEP], since the origin length can be obtained from char_seqs
+        emb_seqs = []
+        for i in range(len(predict_res)):
+            emb_seq = predict_res[i][1:]
+            emb_seqs.append(emb_seq)
+
+        return emb_seqs
 
     @classmethod
     def test(cls):
@@ -56,16 +55,12 @@ class Embedder:
         a = [str2seq(s) for s in a]
         b = [str2seq(s) for s in b]
 
-        embedder = Embedder()
-        a_embedded = embedder.embed(a)
-        b_embedded = embedder.embed(b)
-        print(a_embedded)
-        print(cal_dis(a_embedded, b_embedded))
+        embedder = CharEmbedder()
+        a_emb = embedder.embed(a)
+        b_emb = embedder.embed(b)
+        print(a_emb)
+        print(b_emb)
 
 
 if __name__ == "__main__":
-    em = Embedder()
-    a = em.embed(["不吃饭"])
-    print(len(a))
-    print(len(a[0]))
-    print(len(a[0][0]))
+    CharEmbedder.test()
