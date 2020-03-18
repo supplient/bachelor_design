@@ -135,14 +135,19 @@ def preprocess_tag(tag_seqs, SEQ_LEN, tag_vocab=None, TAG_PAD=''):
     for tag_id_seq in tag_id_seqs:
         padding(tag_id_seq, TAG_PAD_ID, SEQ_LEN)
 
-    # make tag_id one-hot
-    one_hot_tag_id_seqs = []
+    # # make tag_id one-hot: when using softmax, this is needed
+    # one_hot_tag_id_seqs = []
+    # for tag_id_seq in tag_id_seqs:
+        # one_hot_tag_id_seqs.append(
+            # to_categorical(tag_id_seq, num_classes=len(tag_vocab))
+            # )
+    
+    # expand dim: This is for CRF, since it requires shape 1 at dim 3
     for tag_id_seq in tag_id_seqs:
-        one_hot_tag_id_seqs.append(
-            to_categorical(tag_id_seq, num_classes=len(tag_vocab))
-            )
+        for i in range(len(tag_id_seq)):
+            tag_id_seq[i] = [tag_id_seq[i]]
 
-    return one_hot_tag_id_seqs, tag_vocab
+    return tag_id_seqs, tag_vocab
 
 
 
@@ -167,14 +172,14 @@ def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_voc
     )
 
     # preprocess tag_seqs
-    one_hot_tag_id_seqs, tag_vocab = preprocess_tag(
+    tag_id_seqs, tag_vocab = preprocess_tag(
         tag_seqs, 
         SEQ_LEN, 
         tag_vocab, 
         TAG_PAD
     )
 
-    return token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab
+    return token_id_seqs, segment_seqs, tag_id_seqs, tag_vocab
 
 
 if __name__ == "__main__":
