@@ -13,6 +13,7 @@ TAG_VOCAB_PATH = "/Graduation/Model/tag_vocab.pkl"
 MODEL_PATH = "/Graduation/Model/model.h5"
 TRAIN_LOG_PATH = "/Graduation/Model/train.log"
 EQUAL_DATA_PATH = "/Graduation/Data/equal.json"
+EQUAL_PARAM_PATH = "/Graduation/Model/equal_param.json"
 
 # train & test common config
     # Configs which are specialized 
