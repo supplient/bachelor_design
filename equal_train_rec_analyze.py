@@ -4,6 +4,8 @@ import json
 from prettytable import PrettyTable
 
 if __name__ == "__main__":
+    rep = ""
+
     # Load train record
     train_rec = None
     with open(addh + config.EQUAL_TRAIN_REC_PATH, "r") as fd:
@@ -54,10 +56,10 @@ if __name__ == "__main__":
                     round(train_rec[dist_method][emb_method][row_name], 2)
                 )
             t.add_row(row)
-        print(str(t) + "\n")
+        rep += str(t) + "\n"
 
     ## Then, display a total table
-    print("Total: ")
+    rep += "Total: "
     header[0] = "F1"
     t = PrettyTable(
         field_names=header,
@@ -70,4 +72,8 @@ if __name__ == "__main__":
                 round(train_rec[dist_method][emb_method]["F1"], 2)
             )
         t.add_row(row)
-    print(t)
+    rep += str(t)
+
+    with open(addh + config.EQUAL_TRAIN_REP_PATH, "w") as fd:
+        fd.write(rep)
+    print(rep)

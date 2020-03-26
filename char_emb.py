@@ -59,6 +59,15 @@ class CharEmbedder:
             emb_seq = predict_res[i][1:-2]
             emb_seqs.append(emb_seq)
 
+        # Select Method to do after-processing
+        after_method = getattr(
+            CharEmbedder,
+            "_after_" + method_name,
+            None
+        )
+        if after_method != None:
+            emb_seqs = after_method(self, emb_seqs)
+
         return emb_seqs
 
 
@@ -109,6 +118,24 @@ class CharEmbedder:
         self._method_sum_layers(
             layers
         )
+
+    def _after_normalization(self, emb_seqs):
+        '''Normalizaion emb_seqs.
+        Note: This function will edit emb_seqs
+        '''
+        import numpy as np
+        for i in range(len(emb_seqs)):
+            emb_seq = np.array(emb_seqs[i])
+            mean = np.mean(emb_seq)
+            std = np.std(emb_seq)
+            emb_seqs[i] = [(x-mean)/std for x in emb_seq]
+        return emb_seqs
+
+    def _after_sum_last_four(self, emb_seqs):
+        return self._after_normalization(emb_seqs)
+
+    def _after_sum_all(self, emb_seqs):
+        return self._after_normalization(emb_seqs)
 
 
 
