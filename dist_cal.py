@@ -6,9 +6,9 @@ class DistCal:
     methods = [
         "euclidean",
         "cos",
-        "cos_sub_mean",
+        # "cos_sub_mean", # All input has been normalized, the mean is 0. So this has no meaning.
         "manhattan",
-        "std_euclidean",
+        # "std_euclidean", # The reason as above.
         "chebyshev",
         "mahalanobis"
     ]
