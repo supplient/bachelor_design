@@ -144,7 +144,7 @@ def work(max_count):
 
     from tqdm import tqdm
     logging.info("Start generating equal data.")
-    equal_seqs = []
+    equal_strs = []
     start = 0
     count = 0
     for char_seq in tqdm(char_seqs, total=max_count):
@@ -153,15 +153,14 @@ def work(max_count):
             continue
         origin_str = seq2str(char_seq)
         equal_str = equal_generator.generate(origin_str)
-        equal_seq = str2seq(equal_str)
-        equal_seqs.append(equal_seq)
+        equal_strs.append(equal_str)
 
         count += 1
         if count % 50 == 0:
             logging.info("Save " + str(int(count/1000)) + "th")
             save(
                 addh + config.EQUAL_DATA_PATH,
-                equal_seqs,
+                equal_strs,
                 count
             )
             logging.info("Save Done.")
@@ -172,7 +171,7 @@ def work(max_count):
     logging.info("Save the rest")
     save(
         addh + config.EQUAL_DATA_PATH,
-        equal_seqs,
+        equal_strs,
         count
     )
 

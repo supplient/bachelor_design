@@ -56,10 +56,10 @@ if __name__ == "__main__":
                     round(train_rec[dist_method][emb_method][row_name], 2)
                 )
             t.add_row(row)
-        rep += str(t) + "\n"
+        rep += str(t) + "\n\n"
 
     ## Then, display a total table
-    rep += "Total: "
+    rep += "Total: " + "\n"
     header[0] = "F1"
     t = PrettyTable(
         field_names=header,

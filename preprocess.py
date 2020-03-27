@@ -15,31 +15,6 @@ def padding(seq, pad_char, SEQ_LEN):
     while len(seq) < SEQ_LEN:
         seq.append(pad_char)
 
-def load_file(input_file):
-    if not os.path.exists(input_file):
-        raise Exception(input_file + " doesn't exist.")
-
-    char_seqs = []
-    tag_seqs = []
-    char_seq = [] # e.g. 1选择一条保电人员信息记录
-    tag_seq = [] # e.g. O O O O O B-EI I-EI B-EI I-EI B-EI I-EI O O
-    with open(input_file) as fd:
-        for line in fd:
-            if line.strip() == "]":
-                char_seqs.append(char_seq)
-                char_seq = []
-                tag_seqs.append(tag_seq)
-                tag_seq = []
-                continue
-
-            splited_line = line.split(" ")
-            if len(splited_line) != 2:
-                continue
-            char_seq.append(splited_line[0].strip())
-            tag_seq.append(splited_line[1].strip())
-    
-    return char_seqs, tag_seqs
-
 
 def shuffle_twin(a, b):
     if len(a) != len(b):
