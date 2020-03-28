@@ -18,6 +18,7 @@ EQUAL_TRAIN_REC_PATH = "/Graduation/Model/equal_train_rec.json" # To move
 
 # log file path
 EQUAL_TRAIN_REP_PATH = "/Graduation/Log/equal_train_report.txt"
+EQUAL_SIF_TRAIN_REC_PATH = "/Graduation/Log/equal_sif_train_rec.json"
 
 # train & test common config
     # Configs which are specialized 
