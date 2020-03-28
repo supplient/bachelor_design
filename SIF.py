@@ -23,7 +23,7 @@ def cal_char_freq(cut_seqs):
     return freq_seqs
 
 def cal_weight(freq, alpha):
-    return alpha / (alpha * freq)
+    return alpha / (alpha + freq)
 
 # Copy from https://github.com/PrincetonML/SIF/blob/master/src/SIF_embedding.py
 def compute_pc(X,npc=1):
