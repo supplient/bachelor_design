@@ -65,9 +65,11 @@ class EpochCheckpoint(keras.callbacks.Callback):
         self.epoch_count = 0
 
         # Save checkpoint
+        print("Saving checkpint...")
         self.model.save(self.modelpath)
 
         # Do predict
+        print("Predicing for matrics calculating...")
         output_seqs = self.model.predict(
             self.input_seqs,
             batch_size=self.params["batch_size"],
@@ -89,12 +91,13 @@ class EpochCheckpoint(keras.callbacks.Callback):
         with open(self.recpath, "w") as fd:
             json.dump(self.train_rec, fd)
             
+        print("-cost_precision: %f  -label_precision: %f" % (cost_prec, label_prec))
         return super().on_epoch_end(epoch, logs=logs)
 
 
     def cal_metrics(self, output_seqs):
         # Judge each output seq's tag
-        output_tags = [judgeWhichTag(seq) for seq in output_seqs]
+        output_tags = [judgeWhichTag(seq, self.rev_tag_vocab) for seq in output_seqs]
 
         # Cal cost precision
         ## Count each tag category's actual output num
