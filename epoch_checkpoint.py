@@ -138,13 +138,13 @@ class EpochCheckpoint(keras.callbacks.Callback):
                 cost_p[tag] = 0
             else:
                 cost_p[tag] = max(0, expect-diff)/expect
+        print(cost_p)
 
         ## Cal total cost precision
         total_cost_p = 1
         for tag, p in cost_p.items():
-            total_cost_p += 1/max(p, self.SMALL_CONST)
+            total_cost_p += p
         total_cost_p /= len(cost_p)
-        total_cost_p = 1/total_cost_p
 
         # Cal label precision
         right_count = 0
