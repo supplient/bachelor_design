@@ -126,7 +126,10 @@ class EpochCheckpoint(keras.callbacks.Callback):
             output = output_tag_num.get(tag, 0)
             
             diff = abs(expect - output)
-            cost_p[tag] = max(0, expect-diff)/expect
+            if expect == 0:
+                cost_p[tag] = 0
+            else:
+                cost_p[tag] = max(0, expect-diff)/expect
 
         ## Cal total cost precision
         total_cost_p = 1
