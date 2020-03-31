@@ -11,6 +11,7 @@ def getOriginTag(tag):
 
 def judgeWhichTag(tag_id_seq, rev_tag_vocab):
     for tag_id in tag_id_seq:
+        print(tag_id[0]) # TODO
         tag = rev_tag_vocab[tag_id[0]]
         tag = getOriginTag(tag)
         if tag != "":
@@ -32,6 +33,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
         self.rev_tag_vocab = {} # Reverse tag_vocab, we need id => tag here
         for key, value in tag_vocab.items():
             self.rev_tag_vocab[value] = key
+        print(self.rev_tag_vocab) # TODO
         self.tag_names = []
         for key in tag_vocab.keys():
             self.tag_names.append(getOriginTag(key))
@@ -42,17 +44,17 @@ class EpochCheckpoint(keras.callbacks.Callback):
         self.SMALL_CONST = 0.00000001
 
         # Judge each seq's tag
-        self.tags = []
-        for tag_id_seq in self.tag_id_seqs:
-            self.tags.append(
-                judgeWhichTag(tag_id_seq, self.rev_tag_vocab)
-            )
+        # TODO self.tags = []
+        # TODO for tag_id_seq in self.tag_id_seqs:
+            # TODO self.tags.append(
+                # TODO judgeWhichTag(tag_id_seq, self.rev_tag_vocab)
+            # TODO )
 
-        # Count each tag category's expect number
-        self.expect_tag_num = {}
-        for tag in self.tags:
-            num = self.expect_tag_num.get(tag, 0)
-            self.expect_tag_num[tag] = num+1
+        # TODO # Count each tag category's expect number
+        # TODO self.expect_tag_num = {}
+        # TODO for tag in self.tags:
+            # TODO num = self.expect_tag_num.get(tag, 0)
+            # TODO self.expect_tag_num[tag] = num+1
 
 
     def on_train_begin(self, logs={}):
@@ -112,7 +114,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
 
 
     def cal_metrics(self, output_seqs):
-        print(output_seqs)
+        print(output_seqs) # TODO
         # Judge each output seq's tag
         output_tags = [judgeWhichTag(seq, self.rev_tag_vocab) for seq in output_seqs]
 
