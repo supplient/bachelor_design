@@ -2,6 +2,7 @@ import keras
 import logging
 import sys
 import json
+import numpy as np
 
 def getOriginTag(tag):
     if ("B-" in tag) or ("I-" in tag):
@@ -76,15 +77,19 @@ class EpochCheckpoint(keras.callbacks.Callback):
 
         # Save checkpoint
         print("Saving checkpint...")
-        self.model.save(self.modelpath)
+        # TODO self.model.save(self.modelpath)
 
         # Do predict
         print("Predicing for matrics calculating...")
-        output_seqs = self.model.predict(
+        output_one_hot_seqs = self.model.predict(
             self.input_seqs,
             batch_size=self.params["batch_size"],
             verbose=1
         )
+        output_seqs = []
+        for one_hot_seq in output_one_hot_seqs:
+            seq = np.argmax(one_hot_seq[1:-1]) # [1:-1] is to remove [CLS] and [SEP]
+            output_seqs.append(seq)
 
         # Calculate metrics
         cost_prec, label_prec, output_tag_num = self.cal_metrics(output_seqs)
