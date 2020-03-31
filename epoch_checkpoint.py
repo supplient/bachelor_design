@@ -32,10 +32,6 @@ class EpochCheckpoint(keras.callbacks.Callback):
         self.rev_tag_vocab = {} # Reverse tag_vocab, we need id => tag here
         for key, value in tag_vocab.items():
             self.rev_tag_vocab[value] = key
-        print(self.rev_tag_vocab) # TODO
-        self.tag_names = []
-        for key in tag_vocab.keys():
-            self.tag_names.append(getOriginTag(key))
 
         # Init runtime vars
         self.epoch_count = 0
@@ -127,7 +123,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
 
         ## Cal each tag's cost precision
         cost_p = {}
-        for tag in self.tag_names:
+        for tag in self.expect_tag_num.keys():
             if tag == "":
                 continue
             expect = self.expect_tag_num.get(tag, 0)
