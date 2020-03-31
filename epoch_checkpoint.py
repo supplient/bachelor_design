@@ -88,8 +88,8 @@ class EpochCheckpoint(keras.callbacks.Callback):
         )
         output_seqs = []
         for one_hot_seq in output_one_hot_seqs:
-            seq = np.argmax(one_hot_seq[1:-1]) # [1:-1] is to remove [CLS] and [SEP]
-            output_seqs.append(seq)
+            tag_id = np.argmax(one_hot_seq[1:-1]) # [1:-1] is to remove [CLS] and [SEP]
+            output_seqs.append([tag_id])
 
         # Calculate metrics
         cost_prec, label_prec, output_tag_num = self.cal_metrics(output_seqs)
