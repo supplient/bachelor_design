@@ -3,11 +3,17 @@ import logging
 import sys
 import json
 
+def getOriginTag(tag):
+    if ("B-" in tag) or ("I-" in tag):
+        return tag[2:]
+    return ""
+
 def judgeWhichTag(tag_id_seq, rev_tag_vocab):
     for tag_id in tag_id_seq:
         tag = rev_tag_vocab[tag_id[0]]
-        if "B-" in tag:
-            return tag[2:]
+        tag = getOriginTag(tag)
+        if tag != "":
+            return tag
     return "" # Does not belong any tag
 
 class EpochCheckpoint(keras.callbacks.Callback):
@@ -25,6 +31,9 @@ class EpochCheckpoint(keras.callbacks.Callback):
         self.rev_tag_vocab = {} # Reverse tag_vocab, we need id => tag here
         for key, value in tag_vocab.items():
             self.rev_tag_vocab[value] = key
+        self.tag_names = []
+        for key in tag_vocab.keys():
+            self.tag_names.append(getOriginTag(key))
 
         # Init runtime vars
         self.epoch_count = 0
@@ -51,7 +60,8 @@ class EpochCheckpoint(keras.callbacks.Callback):
             {
                 "model_path": self.modelpath,
                 "save_period": self.period,
-                "train_params": self.params
+                "train_params": self.params,
+                "expect_tag_num": self.expect_tag_num
             }
         ]
 
@@ -77,7 +87,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
         )
 
         # Calculate metrics
-        cost_prec, label_prec = self.cal_metrics(output_seqs)
+        cost_prec, label_prec, output_tag_num = self.cal_metrics(output_seqs)
 
         # Update record
         self.train_rec.append(
@@ -85,7 +95,8 @@ class EpochCheckpoint(keras.callbacks.Callback):
                 "epoch": epoch,
                 "logs": logs,
                 "cost_precision": cost_prec,
-                "label_precision": label_prec
+                "label_precision": label_prec,
+                "output_tag_num": output_tag_num
             }
         )
         with open(self.recpath, "w") as fd:
@@ -108,10 +119,11 @@ class EpochCheckpoint(keras.callbacks.Callback):
 
         ## Cal each tag's cost precision
         cost_p = {}
-        for tag, expect in self.expect_tag_num.items():
+        for tag in self.tag_names:
             if tag == "":
                 continue
-            output = output_tag_num[tag]
+            expect = self.expect_tag_num.get(tag, 0)
+            output = output_tag_num.get(tag, 0)
             
             diff = abs(expect - output)
             cost_p[tag] = max(0, expect-diff)/expect
@@ -130,4 +142,4 @@ class EpochCheckpoint(keras.callbacks.Callback):
                 right_count += 1
         label_p = right_count/len(output_tags)
 
-        return total_cost_p, label_p
+        return total_cost_p, label_p, output_tag_num
