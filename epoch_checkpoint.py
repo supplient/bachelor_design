@@ -74,7 +74,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
 
         # Save checkpoint
         print("Saving checkpint...")
-        # TODO self.model.save(self.modelpath)
+        self.model.save(self.modelpath)
 
         # Do predict
         print("Predicing for matrics calculating...")
@@ -110,7 +110,6 @@ class EpochCheckpoint(keras.callbacks.Callback):
 
 
     def cal_metrics(self, output_seqs):
-        print(output_seqs) # TODO
         # Judge each output seq's tag
         output_tags = [judgeWhichTag(seq, self.rev_tag_vocab) for seq in output_seqs]
 
