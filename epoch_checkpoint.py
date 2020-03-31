@@ -38,7 +38,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
         # Init runtime vars
         self.epoch_count = 0
         self.train_rec = []
-        self.SMALL_CONST = 10^-7
+        self.SMALL_CONST = 0.00000001
 
         # Judge each seq's tag
         self.tags = []
