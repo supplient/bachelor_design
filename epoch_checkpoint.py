@@ -100,13 +100,14 @@ class EpochCheckpoint(keras.callbacks.Callback):
             }
         )
         with open(self.recpath, "w") as fd:
-            json.dump(self.train_rec, fd)
+            json.dump(self.train_rec, fd, indent=2)
             
         print("-cost_precision: %f  -label_precision: %f" % (cost_prec, label_prec))
         return super().on_epoch_end(epoch, logs=logs)
 
 
     def cal_metrics(self, output_seqs):
+        print(output_seqs)
         # Judge each output seq's tag
         output_tags = [judgeWhichTag(seq, self.rev_tag_vocab) for seq in output_seqs]
 
