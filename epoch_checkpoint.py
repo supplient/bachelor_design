@@ -64,7 +64,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
                 "model_path": self.modelpath,
                 "save_period": self.period,
                 "train_params": self.params,
-                "expect_tag_num": self.expect_tag_num
+                # TODO "expect_tag_num": self.expect_tag_num
             }
         ]
 
