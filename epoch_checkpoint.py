@@ -11,7 +11,6 @@ def getOriginTag(tag):
 
 def judgeWhichTag(tag_id_seq, rev_tag_vocab):
     for tag_id in tag_id_seq:
-        print(tag_id[0]) # TODO
         tag = rev_tag_vocab[tag_id[0]]
         tag = getOriginTag(tag)
         if tag != "":
@@ -44,17 +43,17 @@ class EpochCheckpoint(keras.callbacks.Callback):
         self.SMALL_CONST = 0.00000001
 
         # Judge each seq's tag
-        # TODO self.tags = []
-        # TODO for tag_id_seq in self.tag_id_seqs:
-            # TODO self.tags.append(
-                # TODO judgeWhichTag(tag_id_seq, self.rev_tag_vocab)
-            # TODO )
+        self.tags = []
+        for tag_id_seq in self.tag_id_seqs:
+            self.tags.append(
+                judgeWhichTag(tag_id_seq, self.rev_tag_vocab)
+            )
 
-        # TODO # Count each tag category's expect number
-        # TODO self.expect_tag_num = {}
-        # TODO for tag in self.tags:
-            # TODO num = self.expect_tag_num.get(tag, 0)
-            # TODO self.expect_tag_num[tag] = num+1
+        # Count each tag category's expect number
+        self.expect_tag_num = {}
+        for tag in self.tags:
+            num = self.expect_tag_num.get(tag, 0)
+            self.expect_tag_num[tag] = num+1
 
 
     def on_train_begin(self, logs={}):
@@ -64,7 +63,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
                 "model_path": self.modelpath,
                 "save_period": self.period,
                 "train_params": self.params,
-                # TODO "expect_tag_num": self.expect_tag_num
+                "expect_tag_num": self.expect_tag_num
             }
         ]
 
@@ -90,8 +89,9 @@ class EpochCheckpoint(keras.callbacks.Callback):
         )
         output_seqs = []
         for one_hot_seq in output_one_hot_seqs:
-            tag_id = np.argmax(one_hot_seq[1:-1]) # [1:-1] is to remove [CLS] and [SEP]
-            output_seqs.append([tag_id])
+            one_hot_seq = one_hot_seq[1:-1] # [1:-1] is to remove [CLS] and [SEP]
+            seq = [[np.argmax(x)] for x in one_hot_seq]
+            output_seqs.append(seq)
 
         # Calculate metrics
         cost_prec, label_prec, output_tag_num = self.cal_metrics(output_seqs)
