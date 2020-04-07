@@ -17,6 +17,7 @@ EQUAL_TRAIN_REC_PATH = "/Graduation/Model/equal_train_rec.json" # To move
 
 # log file path
 TRAIN_REC_PATH = "/Graduation/Log/train.json" 
+TRAIN_TABLE_PATH = "/Graduation/Log/train_table.csv"
 EQUAL_TRAIN_REP_PATH = "/Graduation/Log/equal_train_report.txt"
 EQUAL_TRAIN_TABLE_PATH = "/Graduation/Log/equal_train_table.csv"
 EQUAL_SIF_TRAIN_REC_PATH = "/Graduation/Log/equal_sif_train_rec.json"
