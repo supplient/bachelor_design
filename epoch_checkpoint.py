@@ -116,4 +116,4 @@ class EpochCheckpoint(keras.callbacks.Callback):
 
     def updateTrainRec(self):
         with open(self.recpath, "w") as fd:
-            json.dump(self.train_rec, fd, indent=2)
+            json.dump(self.train_rec, fd)
