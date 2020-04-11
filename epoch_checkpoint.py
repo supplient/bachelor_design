@@ -61,11 +61,10 @@ class EpochCheckpoint(keras.callbacks.Callback):
                     "model_path": self.modelpath,
                     "save_period": self.period,
                     "train_params": self.params,
-                    "expect_tags": self.expect_tags,
                     "completed": "No",
                 }
             ]
-        self.updateTrainRec()
+            self.updateTrainRec()
 
         return super().on_train_begin(logs=logs)
 
@@ -110,7 +109,8 @@ class EpochCheckpoint(keras.callbacks.Callback):
             {
                 "epoch": epoch,
                 "logs": logs,
-                "output_tags": output_tags
+                "expect_tags": self.expect_tags,
+                "output_tags": output_tags,
             }
         )
         self.updateTrainRec()

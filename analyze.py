@@ -1,7 +1,11 @@
 
-def cal_metrics(tags, expect_tag_num, output_tags):
+def cal_metrics(expect_tags, output_tags):
     # Cal cost precision
-    ## Count each tag category's actual output num
+    ## Count each tag category's num
+    expect_tag_num = {}
+    for tag in expect_tags:
+        num = expect_tag_num.get(tag, 0)
+        expect_tag_num[tag] = num + 1
     output_tag_num = {}
     for tag in output_tags:
         num = output_tag_num.get(tag, 0)
@@ -29,7 +33,7 @@ def cal_metrics(tags, expect_tag_num, output_tags):
 
     # Cal label precision
     right_count = 0
-    for expect, output in zip(tags, output_tags):
+    for expect, output in zip(expect_tags, output_tags):
         if expect == output:
             right_count += 1
     label_p = right_count/len(output_tags)
@@ -46,21 +50,13 @@ def analyze(recpath, tablepath):
     with open(recpath, "r") as fd:
         train_rec = json.load(fd)
 
-    # Count each tag category's expect number
-    expect_tag_num = {}
-    expect_tags = train_rec[0]["expect_tags"]
-    for tag in expect_tags:
-        num = expect_tag_num.get(tag, 0)
-        expect_tag_num[tag] = num+1
-
     # Calculate metrics
     cost_prec_list = []
     label_prec_list = []
     char_prec_list = []
     for rec in train_rec[1:]:
         cost_prec, label_prec = cal_metrics(
-            expect_tags,
-            expect_tag_num,
+            rec["expect_tags"],
             rec["output_tags"]
         )
         char_prec = rec["logs"]["val_crf_viterbi_accuracy"]
