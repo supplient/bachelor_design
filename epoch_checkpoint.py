@@ -77,6 +77,9 @@ class EpochCheckpoint(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs={}):
         self.epoch_count += 1
 
+        for key, value in logs.items():
+            logs[key] = float(value)
+
         if self.epoch_count < self.period:
             return super().on_epoch_end(epoch, logs=logs)
         self.epoch_count = 0
