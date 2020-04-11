@@ -39,7 +39,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
         if os.path.exists(self.recpath):
             with open(self.recpath, "r") as fd:
                 self.train_rec = json.load(fd)
-                if self.train_rec[0]["completed"]:
+                if self.train_rec[0]["completed"] == "Yes":
                     self.train_rec = []
 
         # Init runtime vars
@@ -62,7 +62,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
                     "save_period": self.period,
                     "train_params": self.params,
                     "expect_tags": self.expect_tags,
-                    "completed": False
+                    "completed": "No",
                 }
             ]
         self.updateTrainRec()
@@ -70,7 +70,7 @@ class EpochCheckpoint(keras.callbacks.Callback):
         return super().on_train_begin(logs=logs)
 
     def on_train_end(self, logs={}):
-        self.train_rec[0]["completed"] = True
+        self.train_rec[0]["completed"] = "Yes"
         self.updateTrainRec()
         return super().on_train_end(logs=logs)
 
