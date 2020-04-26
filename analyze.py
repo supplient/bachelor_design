@@ -2,10 +2,13 @@
 def cal_metrics(expect_tags, output_tags):
     # Cal cost precision
     ## Count each tag category's num
+    total_expect = 0
     expect_tag_num = {}
     for tag in expect_tags:
         num = expect_tag_num.get(tag, 0)
         expect_tag_num[tag] = num + 1
+        if tag != "":
+            total_expect += 1
     output_tag_num = {}
     for tag in output_tags:
         num = output_tag_num.get(tag, 0)
@@ -23,13 +26,12 @@ def cal_metrics(expect_tags, output_tags):
         if expect == 0:
             cost_p[tag] = 0
         else:
-            cost_p[tag] = max(0, expect-diff)/expect
+            cost_p[tag] = max(0, expect-diff)/total_expect
 
     ## Cal total cost precision
     total_cost_p = 0
     for tag, p in cost_p.items():
         total_cost_p += p
-    total_cost_p /= len(cost_p)
 
     # Cal label precision
     right_count = 0
