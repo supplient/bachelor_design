@@ -14,21 +14,14 @@ class FUNCOMO:
         "SQL": 0.012,
     }
     
-    KLOC_p = 0.91
-    KLOC_q = 0.01
-    w_value = [0, 1, 2, 3, 4, 5]
     develop_mode_factor = {
-        "organic": 2.4,
-        "semi-detached": 3.0,
-        "embedded": 3.6,
-    }
-    EM_factor = {
-        "early-design": 7,
-        "post-arch": 17,
+        "organic": (2.5, 1.05),
+        "semi-detached": (3.0, 1.12),
+        "embedded": (3.6, 1.2)
     }
 
     @classmethod
-    def FP2Scale(cls, fp_counts, p, q, VAF):
+    def FP2AFP(cls, fp_counts, p, q, VAF):
         VAF_sum = sum(VAF)
         factor = p + q * VAF_sum
         fp_sum = sum(fp_counts.values())
@@ -39,10 +32,11 @@ class FUNCOMO:
         return factor * scale
 
     @classmethod
-    def KLOC2PM(cls, KLOC, a, EM, p, q, w):
-        w_sum = sum(w)
-        b = p + q * w_sum
-        return a * EM * KLOC**b
+    def KLOC2PM(cls, KLOC, a, b, EAF):
+        eaf = 1
+        for ele in EAF.values():
+            eaf *= ele
+        return a * eaf * KLOC**b
 
     @classmethod
     def test(cls):
@@ -50,8 +44,14 @@ class FUNCOMO:
             "EO": 10,
             "EQ": 90
         }
-        VAF = [2, 2]
-        scale = FUNCOMO.FP2Scale(
+        VAF = [
+            3, 3, 3,
+            3, 3, 3,
+            3, 3, 3,
+            3, 3, 3,
+            3, 3,
+        ]
+        AFP = FUNCOMO.FP2AFP(
             fp_counts,
             FUNCOMO.fp_p,
             FUNCOMO.fp_q,
@@ -60,24 +60,27 @@ class FUNCOMO:
 
         lang = "C++"
         KLOC = FUNCOMO.scale2KLOC(
-            scale,
+            AFP,
             FUNCOMO.lang_factor[lang]
         )
 
-        w = [2, 2, 2, 2, 2]
         develop_mode = "semi-detached"
-        em = "early-design"
+        EAF = {
+            "required software reliability": 1.15,
+            "run-time performance constraints": 1.11,
+            "analyst capaility": 0.86,
+            "applications experience": 0.82,
+            "required development schedule": 1.04
+        }
         PM = FUNCOMO.KLOC2PM(
             KLOC,
-            FUNCOMO.develop_mode_factor[develop_mode],
-            FUNCOMO.EM_factor[em],
-            FUNCOMO.KLOC_p,
-            FUNCOMO.KLOC_q,
-            w
+            FUNCOMO.develop_mode_factor[develop_mode][0],
+            FUNCOMO.develop_mode_factor[develop_mode][1],
+            EAF
         )
 
         print({
-            "scale": scale,
+            "AFP": AFP,
             "KLOC": KLOC,
             "PM": PM
         })
