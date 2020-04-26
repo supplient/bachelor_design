@@ -65,7 +65,6 @@ pro_B = {
         "size of application database": 0.94,
         "run-time performance constraints": 1.66,
         "memory constraints": 1.56,
-        "analyst capaility": 1.19,
         "applications experience": 1.13,
         "software engineer capability": 0.86,
     }
@@ -99,11 +98,9 @@ pro_C = {
     "develop_mode": "embedded",
     "EAF": {
         "required software reliability": 0.75,
-        "size of application database": 0.94,
         "applications experience": 1.29,
         "virtual machine experience": 1.21,
         "programming language experience": 1.14,
-        "required development schedule": 1.04,
     }
 }
 
