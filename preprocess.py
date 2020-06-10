@@ -155,19 +155,3 @@ def preprocess(char_seqs, tag_seqs, vocab_file, SEQ_LEN=512, cased=True, tag_voc
     )
 
     return token_id_seqs, segment_seqs, tag_id_seqs, tag_vocab
-
-
-if __name__ == "__main__":
-    # file_path = "/mnt/d/My Drive/Graduation/Data/train_dict.txt"
-    file_path = "test.txt"
-    vocab_path = "/mnt/d/My Drive/Graduation/BERT/multi_cased_L-12_H-768_A-12/vocab.txt"
-    char_seqs, tag_seqs = load_file(file_path)
-    char_seqs, tag_seqs = shuffle_twin(char_seqs, tag_seqs)
-    token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab = preprocess(
-        char_seqs, 
-        tag_seqs, 
-        vocab_path,
-        SEQ_LEN=15
-        )
-    print(token_id_seqs, segment_seqs, one_hot_tag_id_seqs, tag_vocab)
-    preprocess(char_seqs, tag_seqs, vocab_path, tag_vocab=tag_vocab)
